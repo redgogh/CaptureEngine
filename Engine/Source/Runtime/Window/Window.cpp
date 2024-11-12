@@ -26,15 +26,17 @@ Window::Window(const char *title, int w, int h)
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-        if ((hwindow = glfwCreateWindow(w, h, title, NULL, NULL)) == NULL)
+        if ((HWINDOW = glfwCreateWindow(w, h, title, NULL, NULL)) == NULL)
                 throw std::runtime_error("[GLFW/CREATE_WINDOW]: GLFW create window failed!");
+
+        glfwSetWindowUserPointer(HWINDOW, this);
 
         GLFW_WINDOW_COUNT++;
 }
 
 Window::~Window()
 {
-        glfwDestroyWindow(hwindow);
+        glfwDestroyWindow(HWINDOW);
         GLFW_WINDOW_COUNT--;
 
         if (GLFW_WINDOW_COUNT == 0)
@@ -43,10 +45,35 @@ Window::~Window()
 
 bool Window::ShouldClose()
 {
-        return glfwWindowShouldClose(hwindow);
+        return glfwWindowShouldClose(HWINDOW);
 }
 
 void Window::PollEvents()
 {
         glfwPollEvents();
+}
+
+void Window::GetSize(int *w, int *h)
+{
+        glfwGetWindowSize(HWINDOW, w, h);
+}
+
+void Window::SetSize(int w, int h)
+{
+        glfwSetWindowSize(HWINDOW, w, h);
+}
+
+void Window::SetSizeCallback(PFN_WindowSizeCallback windowSizeCallback)
+{
+        fnWindowSizeCallback = windowSizeCallback;
+        glfwSetWindowSizeCallback(HWINDOW, [](GLFWwindow *HWIN, int w, int h) {
+                Window *window = (Window *) glfwGetWindowUserPointer(HWIN);
+                window->fnWindowSizeCallback(window, w, h);
+        });
+}
+
+void Window::SetVisible(bool isVisible)
+{
+        isVisibleFlag = isVisible;
+        isVisibleFlag ? glfwShowWindow(HWINDOW) : glfwHideWindow(HWINDOW);
 }

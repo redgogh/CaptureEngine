@@ -21,6 +21,11 @@
 // std
 #include <stdexcept>
 
+class Window;
+
+// Window callbacks
+typedef void (*PFN_WindowSizeCallback) (Window *window, int w, int h);
+
 class Window {
 public:
         Window(const char *title, int w, int h);
@@ -29,6 +34,20 @@ public:
         bool ShouldClose();
         void PollEvents();
 
+        void GetSize(int *w, int *h);
+        void GetWindowHandle() { return HWINDOW; }
+
+        void SetSize(int w, int h);
+        void SetVisible(bool isVisible);
+
+        void SetSizeCallback(PFN_WindowSizeCallback windowSizeCallback);
+
+        bool IsVisible() { return isVisibleFlag; }
+
 private:
-        GLFWwindow *hwindow;
+        bool isVisibleFlag = 0;
+        GLFWwindow *HWINDOW = NULL;
+
+        PFN_WindowSizeCallback fnWindowSizeCallback = NULL;
+
 };

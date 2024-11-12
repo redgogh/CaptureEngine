@@ -23,6 +23,11 @@ int main(int argc, char **argv)
 {
         std::unique_ptr<Window> window = std::make_unique<Window>("CaptureEngine v1.0", 800, 600);
 
+        window->SetSizeCallback([](Window *HWIN, int w, int h) {
+                printf("Window size callback: %d, %d\n", w, h);
+                fflush(stdout);
+        });
+
         while (!window->ShouldClose()) {
                 window->PollEvents();
         }
