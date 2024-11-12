@@ -34,6 +34,13 @@ public:
         bool ShouldClose();
         void PollEvents();
 
+#ifdef VK_VERSION_1_0
+        VkResult vkCreateSurfaceKHR(VkInstance instance, const VkAllocationCallbacks* allocator, VkSurfaceKHR *pSurface)
+        {
+                return glfwCreateWindowSurface(instance, HWINDOW, allocator, pSurface);
+        }
+#endif
+
         void GetSize(int *w, int *h);
         void GetWindowHandle() { return HWINDOW; }
 
