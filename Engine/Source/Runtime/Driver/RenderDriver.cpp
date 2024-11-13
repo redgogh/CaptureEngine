@@ -40,6 +40,24 @@ void RenderDriver::CreateInstance()
 {
         VkResult U_ASSERT_ONLY err;
 
+        uint32_t extCount;
+        vkEnumerateInstanceExtensionProperties(NULL, &extCount, NULL);
+        std::vector<VkExtensionProperties> extProperties(extCount);
+        vkEnumerateInstanceExtensionProperties(NULL, &extCount, std::data(extProperties));
+
+        printf("Vulkan实例可用扩展属性列表\n");
+        for (const auto item : extProperties)
+                printf("  * %s %d\n", item.extensionName, item.specVersion);
+
+        uint32_t layerCount;
+        vkEnumerateInstanceLayerProperties(&layerCount, NULL);
+        std::vector<VkLayerProperties> layerProperties(layerCount);
+        vkEnumerateInstanceLayerProperties(&layerCount, std::data(layerProperties));
+
+        printf("Vulkan实例可用层列表\n");
+        for (const auto item : layerProperties)
+                printf("  * %s %d\n", item.layerName, item.specVersion);
+
         VkApplicationInfo applicationInfo = {
             /* sType= */ VK_STRUCTURE_TYPE_APPLICATION_INFO,
             /* pNext= */ NULL,
@@ -50,6 +68,11 @@ void RenderDriver::CreateInstance()
             /* apiVersion= */ VK_API_VERSION_1_3
         };
 
+        std::vector<const char *> extensions = {
+            "VK_KHR_surface",
+            "VK_KHR_win32_surface",
+        };
+
         VkInstanceCreateInfo instanceCreateInfo = {
             /* sType= */ VK_STRUCTURE_TYPE_INSTANCE_CREATE_INFO,
             /* pNext= */ NULL,
@@ -57,8 +80,8 @@ void RenderDriver::CreateInstance()
             /* pApplicationInfo= */ &applicationInfo,
             /* enabledLayerCount= */ 0,
             /* ppEnabledLayerNames= */ NULL,
-            /* enabledExtensionCount= */ 0,
-            /* ppEnabledExtensionNames= */ NULL,
+            /* enabledExtensionCount= */ (uint32_t) std::size(extensions),
+            /* ppEnabledExtensionNames= */ std::data(extensions),
         };
 
         err = vkCreateInstance(&instanceCreateInfo, NULL, &instance);
