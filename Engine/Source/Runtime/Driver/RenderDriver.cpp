@@ -38,7 +38,7 @@ RenderDriver::~RenderDriver()
 
 void RenderDriver::CreateInstance()
 {
-        VkResult err;
+        VkResult U_ASSERT_ONLY err;
 
         VkApplicationInfo applicationInfo = {
             /* sType= */ VK_STRUCTURE_TYPE_APPLICATION_INFO,
@@ -62,10 +62,12 @@ void RenderDriver::CreateInstance()
         };
 
         err = vkCreateInstance(&instanceCreateInfo, NULL, &instance);
+        assert(!err);
 }
 
 void RenderDriver::CreateSurface()
 {
-        VkResult err;
+        VkResult U_ASSERT_ONLY err;
         err = window->vkCreateSurfaceKHR(instance, NULL, &surface);
+        assert(!err);
 }

@@ -17,21 +17,6 @@
 \* -------------------------------------------------------------------------------- */
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include "Window/Window.h"
-#include <Capture/Error.h>
-
-class RenderDriver {
-public:
-        RenderDriver(Window *window);
-       ~RenderDriver();
-
-private:
-        void CreateInstance();
-        void CreateSurface();
-
-private:
-        Window *window;
-        VkInstance instance;
-        VkSurfaceKHR surface;
-};
+#include "Typedefs.h"
+// std
+#include <assert.h>

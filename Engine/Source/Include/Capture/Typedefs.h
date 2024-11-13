@@ -17,21 +17,8 @@
 \* -------------------------------------------------------------------------------- */
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include "Window/Window.h"
-#include <Capture/Error.h>
-
-class RenderDriver {
-public:
-        RenderDriver(Window *window);
-       ~RenderDriver();
-
-private:
-        void CreateInstance();
-        void CreateSurface();
-
-private:
-        Window *window;
-        VkInstance instance;
-        VkSurfaceKHR surface;
-};
+#if defined(__MINGW32__)
+#  define U_ASSERT_ONLY __attribute__((unused))
+#else
+#  define U_ASSERT_ONLY
+#endif
