@@ -15,7 +15,7 @@
 |*    limitations under the License.                                                *|
 |*                                                                                  *|
 \* -------------------------------------------------------------------------------- */
-#include "Window/Window.h"
+#include "Driver/RenderDriver.h"
 // std
 #include <memory>
 
@@ -23,10 +23,7 @@ int main(int argc, char **argv)
 {
         std::unique_ptr<Window> window = std::make_unique<Window>("CaptureEngine v1.0", 800, 600);
 
-        window->SetSizeCallback([](Window *HWIN, int w, int h) {
-                printf("Window size callback: %d, %d\n", w, h);
-                fflush(stdout);
-        });
+        RenderDriver driver(window.get());
 
         while (!window->ShouldClose()) {
                 window->PollEvents();

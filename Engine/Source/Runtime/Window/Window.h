@@ -42,7 +42,7 @@ public:
 #endif
 
         void GetSize(int *w, int *h);
-        void GetWindowHandle() { return HWINDOW; }
+        GLFWwindow *GetWindowHandle() { return HWINDOW; }
 
         void SetSize(int w, int h);
         void SetVisible(bool isVisible);
