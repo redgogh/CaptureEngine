@@ -21,6 +21,10 @@
 // std
 #include <stdexcept>
 
+class Window;
+
+typedef void (*PFN_WindowSizeCallback) (Window *window, int w, int h);
+
 inline static void poll_events()
 {
         glfwPollEvents();
@@ -33,6 +37,10 @@ public:
 
         bool should_close();
 
+        void set_size_callback(PFN_WindowSizeCallback v_SizeCallback);
+
 private:
         GLFWwindow *HWINDOW = NULL;
+
+        PFN_WindowSizeCallback size_callback = NULL;
 };

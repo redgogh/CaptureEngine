@@ -46,3 +46,12 @@ bool Window::should_close()
 {
         return glfwWindowShouldClose(HWINDOW);
 }
+
+void Window::set_size_callback(PFN_WindowSizeCallback v_size_callback)
+{
+        size_callback = v_size_callback;
+        glfwSetWindowSizeCallback(HWINDOW, [](GLFWwindow *hwind, int w, int h) {
+                Window *window = (Window *) glfwGetWindowUserPointer(hwind);
+                window->size_callback(window, w, h);
+        });
+}
