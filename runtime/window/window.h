@@ -42,5 +42,5 @@ public:
 private:
         GLFWwindow *HWINDOW = NULL;
 
-        PFN_WindowSizeCallback size_callback = NULL;
+        PFN_WindowSizeCallback fn_size_callback = NULL;
 };
