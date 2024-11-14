@@ -15,65 +15,34 @@
 |*    limitations under the License.                                                *|
 |*                                                                                  *|
 \* -------------------------------------------------------------------------------- */
-#include "Window.h"
+#include "window.h"
 
-static int GLFW_WINDOW_COUNT = 0;
+static int created_window_count = 0;
 
-Window::Window(const char *title, int w, int h)
+Window::Window(int w, int h, const char *title)
 {
         if (!glfwInit())
-                throw std::runtime_error("[GLFW/INIT]: GLFW init failed!");
+                throw std::runtime_error("[GLFW]: glfw libraries init failed!");
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
 
-        if ((HWINDOW = glfwCreateWindow(w, h, title, NULL, NULL)) == NULL)
-                throw std::runtime_error("[GLFW/CREATE_WINDOW]: GLFW create window failed!");
+        if (!(HWINDOW = glfwCreateWindow(w, h, title, NULL, NULL)))
+                throw std::runtime_error("[GLFW]: glfw create window failed!");
 
+        created_window_count++;
         glfwSetWindowUserPointer(HWINDOW, this);
-
-        GLFW_WINDOW_COUNT++;
 }
 
 Window::~Window()
 {
         glfwDestroyWindow(HWINDOW);
-        GLFW_WINDOW_COUNT--;
+        created_window_count--;
 
-        if (GLFW_WINDOW_COUNT == 0)
+        if (created_window_count == 0)
                 glfwTerminate();
 }
 
-bool Window::ShouldClose()
+bool Window::should_close()
 {
         return glfwWindowShouldClose(HWINDOW);
-}
-
-void Window::PollEvents()
-{
-        glfwPollEvents();
-}
-
-void Window::GetSize(int *w, int *h)
-{
-        glfwGetWindowSize(HWINDOW, w, h);
-}
-
-void Window::SetSize(int w, int h)
-{
-        glfwSetWindowSize(HWINDOW, w, h);
-}
-
-void Window::SetSizeCallback(PFN_WindowSizeCallback windowSizeCallback)
-{
-        fnWindowSizeCallback = windowSizeCallback;
-        glfwSetWindowSizeCallback(HWINDOW, [](GLFWwindow *HWIN, int w, int h) {
-                Window *window = (Window *) glfwGetWindowUserPointer(HWIN);
-                window->fnWindowSizeCallback(window, w, h);
-        });
-}
-
-void Window::SetVisible(bool isVisible)
-{
-        isVisibleFlag = isVisible;
-        isVisibleFlag ? glfwShowWindow(HWINDOW) : glfwHideWindow(HWINDOW);
 }

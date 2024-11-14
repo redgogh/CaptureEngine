@@ -15,18 +15,14 @@
 |*    limitations under the License.                                                *|
 |*                                                                                  *|
 \* -------------------------------------------------------------------------------- */
-#include "Driver/RenderDriver.h"
-// std
-#include <memory>
+#include "main.h"
 
 int main(int argc, char **argv)
 {
-        std::unique_ptr<Window> window = std::make_unique<Window>("CaptureEngine v1.0", 800, 600);
+        std::unique_ptr<Window> window = std::make_unique<Window>(800, 600, "Capture Engine v1.0");
 
-        RenderDriver driver(window.get());
-
-        while (!window->ShouldClose()) {
-                window->PollEvents();
+        while(!window->should_close()) {
+                poll_events();
         }
 
         return 0;

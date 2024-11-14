@@ -18,15 +18,36 @@ PROJECT(CaptureEngine)
 
 SET(CMAKE_CXX_STANDARD 23)
 
-SET(MODULE_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
-SET(THIRD_PARTY_DIR "${MODULE_ROOT_DIR}/Engine/Source/ThirdParty")
+SET(PROJECT_ROOT_DIR ${CMAKE_CURRENT_SOURCE_DIR})
+SET(THIRD_PARTY_DIR "${PROJECT_ROOT_DIR}/thirdparty")
 
-INCLUDE_DIRECTORIES(SYSTEM "Engine/Source/Include")
+INCLUDE_DIRECTORIES(SYSTEM
+  "thirdparty"
+  "include"
+)
+
+INCLUDE_DIRECTORIES(
+  "runtime"
+)
 
 IF (CMAKE_CXX_COMPILE_ID STREQUAL "MSVC")
   ADD_COMPILE_OPTIONS("/source-charset:utf-8")
   ADD_COMPILE_OPTIONS("/executing-charset:utf-8")
 ENDIF ()
 
-ADD_SUBDIRECTORY("Engine/Source/Runtime")
-ADD_SUBDIRECTORY("Engine/Source/Sandbox")
+FILE(GLOB_RECURSE SOURCES
+  "main/*.cpp"
+  "runtime/window/*.cpp"
+)
+
+LINK_DIRECTORIES(
+  "${THIRD_PARTY_DIR}/GLFW/lib-mingw-w64"
+  "${THIRD_PARTY_DIR}/vulkan/bin"
+)
+
+ADD_EXECUTABLE(${PROJECT_NAME} ${SOURCES})
+
+TARGET_LINK_LIBRARIES(${PROJECT_NAME}
+  "glfw3"
+  "vulkan-1"
+)

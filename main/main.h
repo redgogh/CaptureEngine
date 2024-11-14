@@ -17,14 +17,6 @@
 \* -------------------------------------------------------------------------------- */
 #pragma once
 
-#include "Typedefs.h"
+#include "window/window.h"
 // std
-#include <assert.h>
-
-#define EXIT(code) exit(code)
-#define EXIT_ERR() exit(1)
-
-#define EXIT_FAIL(...) do {             \
-        fprintf(stderr, __VA_ARGS__);   \
-        EXIT_ERR();                     \
-} while(0)
+#include <memory>

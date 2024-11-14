@@ -17,21 +17,22 @@
 \* -------------------------------------------------------------------------------- */
 #pragma once
 
-#include <vulkan/vulkan.h>
-#include "Window/Window.h"
-#include <Capture/Error.h>
+#include <GLFW/glfw3.h>
+// std
+#include <stdexcept>
 
-class RenderDriver {
+inline static void poll_events()
+{
+        glfwPollEvents();
+}
+
+class Window {
 public:
-        RenderDriver(Window *window);
-       ~RenderDriver();
+        Window(int w, int h, const char *title);
+       ~Window();
+
+        bool should_close();
 
 private:
-        void CreateInstance();
-        void CreateSurface();
-
-private:
-        Window *window;
-        VkInstance instance;
-        VkSurfaceKHR surface;
+        GLFWwindow *HWINDOW = NULL;
 };

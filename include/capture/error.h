@@ -16,9 +16,3 @@
 |*                                                                                  *|
 \* -------------------------------------------------------------------------------- */
 #pragma once
-
-#if defined(__MINGW32__)
-#define U_ASSERT_ONLY __attribute__((unused))
-#else
-#define U_ASSERT_ONLY
-#endif /* __MINGW32__ */
