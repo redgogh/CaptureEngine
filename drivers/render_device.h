@@ -22,6 +22,7 @@
 #include <capture/error.h>
 // std
 #include <vector>
+#include <tuple>
 
 class RenderDevice {
 public:
@@ -29,12 +30,20 @@ public:
        ~RenderDevice();
 
 private:
+        void _init_render_device();
+        void _destroy_render_device();
+
         void _create_instance();
         void _create_surface();
+        void _init_gpu_device();
+        void _create_device();
 
 private:
         Window *window;
 
+        VkPhysicalDeviceProperties gpu_info;
+
         VkInstance inst = NULL;
         VkSurfaceKHR surface = NULL;
+        VkPhysicalDevice gpu = NULL;
 };

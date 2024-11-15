@@ -20,11 +20,22 @@
 RenderDevice::RenderDevice(Window *p_window)
         : window(p_window)
 {
-        _create_instance();
-        _create_surface();
+        _init_render_device();
 }
 
 RenderDevice::~RenderDevice()
+{
+        _destroy_render_device();
+}
+
+void RenderDevice::_init_render_device()
+{
+        _create_instance();
+        _create_surface();
+        _init_gpu_device();
+}
+
+void RenderDevice::_destroy_render_device()
 {
         vkDestroySurfaceKHR(inst, surface, NULL);
         vkDestroyInstance(inst, NULL);
@@ -79,4 +90,42 @@ void RenderDevice::_create_surface()
         VkResult U_ASSERT_ONLY err;
         err = window->vk_create_surface(inst, NULL, &surface);
         assert(!err);
+}
+
+void RenderDevice::_init_gpu_device()
+{
+        VkResult U_ASSERT_ONLY err;
+
+        uint32_t gpu_count = 0;
+        err = vkEnumeratePhysicalDevices(inst, &gpu_count, NULL);
+        assert(!err);
+
+        std::vector<VkPhysicalDevice> gpu_list(gpu_count);
+        err = vkEnumeratePhysicalDevices(inst, &gpu_count, std::data(gpu_list));
+        assert(!err);
+
+        std::vector<VkPhysicalDeviceProperties> properties(gpu_count);
+
+        for (const auto device : gpu_list)
+                vkGetPhysicalDeviceProperties(device, &properties[0]);
+
+        for (int i = 0; i < gpu_count; i++) {
+                if (properties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
+                        this->gpu = gpu_list[i];
+                        this->gpu_info = properties[i];
+                        break;
+                }
+        }
+
+        if (this->gpu == NULL) {
+                this->gpu = gpu_list[0];
+                this->gpu_info = properties[0];
+        }
+
+        printf("[vulkan] physical device selected: %s\n", gpu_info.deviceName);
+}
+
+void RenderDevice::_create_device()
+{
+
 }
