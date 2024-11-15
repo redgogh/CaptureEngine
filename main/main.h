@@ -17,6 +17,6 @@
 \* -------------------------------------------------------------------------------- */
 #pragma once
 
-#include "window/window.h"
+#include "surface/window.h"
 // std
 #include <memory>

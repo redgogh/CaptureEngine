@@ -27,7 +27,7 @@ INCLUDE_DIRECTORIES(SYSTEM
 )
 
 INCLUDE_DIRECTORIES(
-  "runtime"
+  "/"
 )
 
 IF (CMAKE_CXX_COMPILE_ID STREQUAL "MSVC")
@@ -37,7 +37,7 @@ ENDIF ()
 
 FILE(GLOB_RECURSE SOURCES
   "main/*.cpp"
-  "runtime/window/*.cpp"
+  "surface/*.cpp"
 )
 
 LINK_DIRECTORIES(
