@@ -15,43 +15,35 @@
 |*    limitations under the License.                                                *|
 |*                                                                                  *|
 \* -------------------------------------------------------------------------------- */
-#include "window.h"
+#pragma once
 
-static int created_window_count = 0;
+#include <GLFW/glfw3.h>
+// std
+#include <stdexcept>
 
-Window::Window(int w, int h, const char *title)
+class Window;
+
+typedef void (*PFN_WindowSizeCallback) (Window *window, int w, int h);
+
+inline static void poll_events()
 {
-        if (!glfwInit())
-                throw std::runtime_error("[GLFW]: glfw libraries init failed!");
-
-        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-
-        if (!(HWINDOW = glfwCreateWindow(w, h, title, NULL, NULL)))
-                throw std::runtime_error("[GLFW]: glfw create window failed!");
-
-        created_window_count++;
-        glfwSetWindowUserPointer(HWINDOW, this);
+        glfwPollEvents();
 }
 
-Window::~Window()
-{
-        glfwDestroyWindow(HWINDOW);
-        created_window_count--;
+class Window {
+public:
+        Window(int w, int h, const char *title);
+       ~Window();
 
-        if (created_window_count == 0)
-                glfwTerminate();
-}
+        bool should_close();
 
-bool Window::should_close()
-{
-        return glfwWindowShouldClose(HWINDOW);
-}
+        void set_size(int w, int h);
+        void set_size_callback(PFN_WindowSizeCallback v_SizeCallback);
 
-void Window::set_size_callback(PFN_WindowSizeCallback v_size_callback)
-{
-        fn_size_callback = v_size_callback;
-        glfwSetWindowSizeCallback(HWINDOW, [](GLFWwindow *hwind, int w, int h) {
-                Window *window = (Window *) glfwGetWindowUserPointer(hwind);
-                window->fn_size_callback(window, w, h);
-        });
-}
+        void get_size(int *w, int *h);
+
+private:
+        GLFWwindow *HWINDOW = NULL;
+
+        PFN_WindowSizeCallback fn_size_callback = NULL;
+};

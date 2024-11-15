@@ -15,32 +15,53 @@
 |*    limitations under the License.                                                *|
 |*                                                                                  *|
 \* -------------------------------------------------------------------------------- */
-#pragma once
+#include "window.h"
 
-#include <GLFW/glfw3.h>
-// std
-#include <stdexcept>
+static int created_window_count = 0;
 
-class Window;
-
-typedef void (*PFN_WindowSizeCallback) (Window *window, int w, int h);
-
-inline static void poll_events()
+Window::Window(int w, int h, const char *title)
 {
-        glfwPollEvents();
+        if (!glfwInit())
+                throw std::runtime_error("[GLFW]: glfw libraries init failed!");
+
+        glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+
+        if (!(HWINDOW = glfwCreateWindow(w, h, title, NULL, NULL)))
+                throw std::runtime_error("[GLFW]: glfw create window failed!");
+
+        created_window_count++;
+        glfwSetWindowUserPointer(HWINDOW, this);
 }
 
-class Window {
-public:
-        Window(int w, int h, const char *title);
-       ~Window();
+Window::~Window()
+{
+        glfwDestroyWindow(HWINDOW);
+        created_window_count--;
 
-        bool should_close();
+        if (created_window_count == 0)
+                glfwTerminate();
+}
 
-        void set_size_callback(PFN_WindowSizeCallback v_SizeCallback);
+bool Window::should_close()
+{
+        return glfwWindowShouldClose(HWINDOW);
+}
 
-private:
-        GLFWwindow *HWINDOW = NULL;
+void Window::set_size(int w, int h)
+{
+        glfwSetWindowSize(HWINDOW, w, h);
+}
 
-        PFN_WindowSizeCallback fn_size_callback = NULL;
-};
+void Window::set_size_callback(PFN_WindowSizeCallback v_size_callback)
+{
+        fn_size_callback = v_size_callback;
+        glfwSetWindowSizeCallback(HWINDOW, [](GLFWwindow *hwind, int w, int h) {
+                Window *window = (Window *) glfwGetWindowUserPointer(hwind);
+                window->fn_size_callback(window, w, h);
+        });
+}
+
+void Window::get_size(int *w, int *h)
+{
+        glfwGetWindowSize(HWINDOW, w, h);
+}
