@@ -17,6 +17,6 @@
 \* -------------------------------------------------------------------------------- */
 #pragma once
 
-#include "surface/window.h"
+#include "drivers/render_device.h"
 // std
 #include <memory>

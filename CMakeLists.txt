@@ -38,6 +38,7 @@ ENDIF ()
 FILE(GLOB_RECURSE SOURCES
   "main/*.cpp"
   "surface/*.cpp"
+  "drivers/*.cpp"
 )
 
 LINK_DIRECTORIES(

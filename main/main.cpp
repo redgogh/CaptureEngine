@@ -20,6 +20,7 @@
 int main(int argc, char **argv)
 {
         std::unique_ptr<Window> window = std::make_unique<Window>(800, 600, "Capture Engine v1.0");
+        std::unique_ptr<RenderDevice> rdev = std::make_unique<RenderDevice>(window.get());
 
         while(!window->should_close()) {
                 poll_events();

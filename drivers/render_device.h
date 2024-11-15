@@ -18,3 +18,23 @@
 #pragma once
 
 #include <vulkan/vulkan.h>
+#include "surface/window.h"
+#include <capture/error.h>
+// std
+#include <vector>
+
+class RenderDevice {
+public:
+        RenderDevice(Window *p_window);
+       ~RenderDevice();
+
+private:
+        void _create_instance();
+        void _create_surface();
+
+private:
+        Window *window;
+
+        VkInstance inst = NULL;
+        VkSurfaceKHR surface = NULL;
+};

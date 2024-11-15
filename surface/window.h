@@ -37,6 +37,13 @@ public:
 
         bool should_close();
 
+#ifdef VK_VERSION_1_0
+        VkResult vk_create_surface(VkInstance instance, const VkAllocationCallbacks* allocator, VkSurfaceKHR* surface)
+        {
+                return glfwCreateWindowSurface(instance, HWINDOW, NULL, surface);
+        }
+#endif
+
         void set_size(int w, int h);
         void set_size_callback(PFN_WindowSizeCallback v_SizeCallback);
 
