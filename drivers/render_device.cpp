@@ -32,11 +32,14 @@ void RenderDevice::_init_render_device()
 {
         _create_instance();
         _create_surface();
-        _init_gpu_device();
+        _InitializeGPUDevice();
+        _CreateDevice();
 }
 
 void RenderDevice::_destroy_render_device()
 {
+        vkDestroyDevice(device, NULL);
+
         vkDestroySurfaceKHR(inst, surface, NULL);
         vkDestroyInstance(inst, NULL);
 }
@@ -92,7 +95,7 @@ void RenderDevice::_create_surface()
         assert(!err);
 }
 
-void RenderDevice::_init_gpu_device()
+void RenderDevice::_InitializeGPUDevice()
 {
         VkResult U_ASSERT_ONLY err;
 
@@ -112,20 +115,33 @@ void RenderDevice::_init_gpu_device()
         for (int i = 0; i < gpu_count; i++) {
                 if (properties[i].deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU) {
                         this->gpu = gpu_list[i];
-                        this->gpu_info = properties[i];
+                        // this->gpu_info = properties[i];
                         break;
                 }
         }
 
         if (this->gpu == NULL) {
                 this->gpu = gpu_list[0];
-                this->gpu_info = properties[0];
+                this->gpuInfo = properties[0];
         }
 
-        printf("[vulkan] physical device selected: %s\n", gpu_info.deviceName);
+        // printf("[vulkan] physical device selected: %s\n", gpu_info.deviceName);
 }
 
-void RenderDevice::_create_device()
+void RenderDevice::_CreateDevice()
 {
+        VkResult U_ASSERT_ONLY err;
 
+        uint32_t queueCount;
+        vkGetPhysicalDeviceQueueFamilyProperties(gpu, &queueCount, NULL);
+        std::vector<VkQueueFamilyProperties> queueFamilies(queueCount);
+        vkGetPhysicalDeviceQueueFamilyProperties(gpu, &queueCount, std::data(queueFamilies));
+
+        VkDeviceCreateInfo device_ci = {};
+        device_ci.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
+        device_ci.pNext = NULL;
+        device_ci.flags = 0;
+
+        err = vkCreateDevice(gpu, &device_ci, NULL, &device);
+        assert(!err);
 }

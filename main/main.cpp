@@ -17,14 +17,30 @@
 \* -------------------------------------------------------------------------------- */
 #include "main.h"
 
+typedef std::filesystem::path Path;
+
+void traverse_directory(const Path &dir_path, std::vector<Path> *p_dirs)
+{
+        if (!std::filesystem::exists(dir_path) || !std::filesystem::is_directory(dir_path))
+                return;
+
+        for (const auto &entry : std::filesystem::directory_iterator(dir_path)) {
+                if (std::filesystem::is_directory(entry))
+                        traverse_directory(entry.path(), p_dirs);
+                p_dirs->push_back(entry.path());
+        }
+}
+
 int main(int argc, char **argv)
 {
-        std::unique_ptr<Window> window = std::make_unique<Window>(800, 600, "Capture Engine v1.0");
-        std::unique_ptr<RenderDevice> rdev = std::make_unique<RenderDevice>(window.get());
+        std::vector<Path> dirs;
+        traverse_directory("D:\\.redgogh", &dirs);
 
-        while(!window->should_close()) {
-                poll_events();
+        for (const auto &item: dirs) {
+                std::cout << item.string() << std::endl;
         }
+
+        std::cout << "file count: " << std::size(dirs) << std::endl;
 
         return 0;
 }

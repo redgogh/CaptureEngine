@@ -35,15 +35,16 @@ private:
 
         void _create_instance();
         void _create_surface();
-        void _init_gpu_device();
-        void _create_device();
+        void _InitializeGPUDevice();
+        void _CreateDevice();
 
 private:
         Window *window;
 
-        VkPhysicalDeviceProperties gpu_info;
+        VkPhysicalDeviceProperties gpuInfo;
 
         VkInstance inst = NULL;
         VkSurfaceKHR surface = NULL;
         VkPhysicalDevice gpu = NULL;
+        VkDevice device = NULL;
 };
